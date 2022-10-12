@@ -29,7 +29,7 @@ public class Projectile {
 //       System.out.println(Math.sin(angleRad));
         position[0] = xPosition;
         position[1] = yPosition;
-        speed = 2;
+        speed = 1.05;
         direction[1] = -Math.cos(angleRad);
         direction[0] = Math.sin(angleRad);
 
@@ -79,5 +79,12 @@ public class Projectile {
     private void rotate(GraphicsContext gc, double angle, double px, double py) {
         Rotate r = new Rotate(angle, px, py);
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+    }
+
+    boolean isTouchingPlayer(Player pl){
+        if(Math.round(pl.x) == Math.round(this.position[0]) && Math.round(pl.y) == Math.round(this.position[1])){
+            return true;
+        }
+        return false;
     }
 }

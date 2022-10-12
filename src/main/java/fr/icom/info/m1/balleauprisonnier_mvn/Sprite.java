@@ -9,10 +9,16 @@ import javafx.util.Duration;
 class Sprite extends ImageView {
     private final Rectangle2D[] walkClips;
     private final Rectangle2D[] shootClips;
+
+//    private final Rectangle2D[] deathClips;
     private int numCells;
     private int numCellsWalk;
     private int numCellsShoot;
+
+//    private int numCellsDeath;
     private final Timeline walkTimeline;
+
+//    private final Timeline deathTimeline;
     private final IntegerProperty frameCounter = new SimpleIntegerProperty(0);
     private final Timeline shootTimeline;
     private Timeline timeline;
@@ -68,6 +74,29 @@ class Sprite extends ImageView {
                 }));
 
         timeline = walkTimeline;
+
+
+//        // ESSAI ANIMATION MORT
+//        numCellsDeath = 6;
+//        lineNumber = 20;
+//
+//        deathClips = new Rectangle2D[numCellsDeath];
+//        for (int i = 0; i < numCellsDeath; i++) {
+//            deathClips[i] = new Rectangle2D(
+//                    i * cellWidth, cellHeight*lineNumber,
+//                    cellWidth, cellHeight
+//            );
+//        }
+//
+//
+//        deathTimeline = new Timeline(
+//                new KeyFrame(frameTime, event -> {
+//                    frameCounter.set((frameCounter.get() + 1) % numCellsDeath);
+//                    setViewport(deathClips[frameCounter.get()]);
+//                })
+//        );
+//
+//        // FIN ESSAI ANIMATION MORT
         isRunning = false;
     }
 
@@ -88,6 +117,16 @@ class Sprite extends ImageView {
         timeline.setOnFinished(e -> playContinuously());
         timeline.playFromStart();
     }
+
+//    public void playDeath(){
+//        System.out.println("anim tuer");
+//        frameCounter.set(0);
+//        timeline.stop();
+//        timeline = deathTimeline;
+//        timeline.setCycleCount(numCellsDeath);
+////        timeline.setOnFinished(e -> playContinuously());
+//        timeline.playFromStart();
+//    }
 
     public void stop() {
         frameCounter.set(0);

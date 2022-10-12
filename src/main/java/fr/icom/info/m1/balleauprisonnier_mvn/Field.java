@@ -25,7 +25,7 @@ public class Field extends Canvas {
 	/** Tableau traçant les evenements */
     ArrayList<String> input = new ArrayList<String>();
 
-	Projectile pr;
+	Projectile theBall;
     
 
     final GraphicsContext gc;
@@ -49,6 +49,7 @@ public class Field extends Canvas {
 		this.setFocusTraversable(true);
 		
         gc = this.getGraphicsContext2D();
+		theBall = new Projectile(0, w/2, h/2, this.gc);
         
         /** On initialise le terrain de jeu */
 		for (int i = 0; i < joueursHuman.length; i++){
@@ -108,25 +109,41 @@ public class Field extends Canvas {
 	    new AnimationTimer() 
 	    {
 	        public void handle(long currentNanoTime)
-	        {	 
+	        {
+
 	            // On nettoie le canvas a chaque frame
 	            gc.setFill( Color.LIGHTGRAY);
 	            gc.fillRect(0, 0, width, height);
-	        	
-	            // Deplacement et affichage des joueurs
-	        	for (int i = 0; i < joueursHuman.length; i++)
-	    	    {
-					joueursHuman[i].deplacement(input, i);
 
-					joueursHuman[i].display();
-	    	    }
-				for (int i = 0; i < joueursAI.length; i++){
-					joueursAI[i].spriteAnimate();
-					joueursAI[i].display();
+				if(theBall != null){
+					// Deplacement et affichage des joueurs
+					for (int i = 0; i < joueursHuman.length; i++)
+					{
+
+						joueursHuman[i].deplacement(input, i);
+						joueursHuman[i].spriteAnimate();
+						joueursHuman[i].display();
+					}
+					for (int i = 0; i < joueursAI.length; i++){
+						if(!theBall.isTouchingPlayer(joueursAI[i])){
+							joueursAI[i].spriteAnimate();
+							joueursAI[i].display();
+						}
+						else{
+							System.out.println("TUERRRR");
+							joueursAI[i].isAlive = false;
+						}
+
+
+
+//							System.out.println("Joueur " + joueursAI[i].x + " " +joueursAI[i].y);
+//							System.out.println("Balle " + theBall.position[0] + " " + theBall.position[1]);
+
+
+
+					}
+						theBall.display();
 				}
-//				if(pr != null){
-//					pr.display();
-//				}
 
 	    	}
 	     }.start(); // On lance la boucle de rafraichissement 

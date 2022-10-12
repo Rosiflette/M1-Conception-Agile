@@ -17,21 +17,25 @@ import java.util.Random;
  */
 public class Player 
 {
-	  double x;       // position horizontale du joueur
-	  final double y; 	  // position verticale du joueur
-	  double angle = 90; // rotation du joueur, devrait toujour être en 0 et 180
-	  double step;    // pas d'un joueur
-	  String playerColor;
+	  protected double x;       // position horizontale du joueur
+	  protected final double y; 	  // position verticale du joueur
+	  protected double angle = 90; // rotation du joueur, devrait toujour être en 0 et 180
+	  protected double step;    // pas d'un joueur
+	  protected String playerColor;
 	  
 	  // On une image globale du joueur 
-	  Image directionArrow;
-	  Sprite sprite;
-	  ImageView PlayerDirectionArrow;
+	  protected Image directionArrow;
+	  protected Sprite sprite;
+	  protected ImageView PlayerDirectionArrow;
 	  
-	  GraphicsContext graphicsContext;
+	  protected GraphicsContext graphicsContext;
 
 	  Projectile pr;
 	  boolean isShooting = false;
+
+	  boolean isAlive = true;
+
+	  boolean hasBall = false;
 
 	  /**
 	   * Constructeur du Joueur
@@ -85,36 +89,16 @@ public class Player
 	   */
 	  void display()
 	  {
-//		  System.out.println("Position joueur " + x + " " + y);
-		  graphicsContext.save(); // saves the current state on stack, including the current transform
+		if(isAlive){
+			graphicsContext.save(); // saves the current state on stack, including the current transform
+			rotate(graphicsContext, angle, x + directionArrow.getWidth() / 2, y + directionArrow.getHeight() / 2);
+			graphicsContext.drawImage(directionArrow, x, y);
+			graphicsContext.restore(); // back to original state (before rotation)
 
-
-	      rotate(graphicsContext, angle, x + directionArrow.getWidth() / 2, y + directionArrow.getHeight() / 2);
-		  graphicsContext.drawImage(directionArrow, x, y);
-//		  System.out.println(angle);
-
-
-
-		  graphicsContext.restore(); // back to original state (before rotation)
-
-		  if(pr != null){
-			  pr.display();
-		  }
-
-//		  if(isShooting && pr != null){
-//
-//			  pr.position[0] += pr.direction[0] * pr.speed;
-//			  pr.position[1] -= pr.direction[1] * pr.speed;
-////			  System.out.println(pr.direction[0] + " " + pr.direction[1]);
-//			  graphicsContext.drawImage(pr.imgBall, pr.position[0], pr.position[1]);
-//
-////			  pr.position[0] += pr.direction[0];
-////			  pr.position[1] += pr.direction[1];
-////			  System.out.println(pr.direction[0] + " " + pr.direction[1]);
-////			  System.out.println(pr.position[0] + " " + pr.position[1]);
-//			  //System.out.println("Position " + pr.position[0] + " " + pr.position[1]);
-////			  graphicsContext.drawImage(pr.imgBall, pr.position[0], pr.position[1]);
-//		  }
+			if(pr != null){
+				pr.display();
+			}
+		}
 
 	  }
 
@@ -156,12 +140,17 @@ public class Player
 	   */
 	  void turnLeft() 
 	  {
-	    if (angle > 0 && angle < 180) 
+	    if (angle+90 >= 0 && angle+90 <= 180)
 	    {
 	    	angle += 0.2;
 	    }
 	    else {
-	    	angle += 0.2;
+			if(angle+90 >= 0){
+				angle = 90;
+			}
+			else{
+				angle = -90;
+			}
 	    }
 
 	  }
@@ -172,12 +161,17 @@ public class Player
 	   */
 	  void turnRight() 
 	  {
-	    if (angle > 0 && angle < 180) 
+	    if (angle+90 >= 0 && angle+90 <= 180)
 	    {
 	    	angle -=0.2;
 	    }
 	    else {
-	    	angle -= 0.2;
+	    	if(angle+90 >= 0){
+				angle = 90;
+			}
+			else{
+				angle = -90;
+			}
 	    }
 	  }
 
@@ -202,9 +196,17 @@ public class Player
 
 	  void spriteAnimate(){
 	  	  //System.out.println("Animating sprite");
-		  if(!sprite.isRunning) {sprite.playContinuously();}
-		  sprite.setX(x);
-		  sprite.setY(y);
+		  if(isAlive){
+			  if(!sprite.isRunning) {sprite.playContinuously();}
+			  sprite.setX(x);
+			  sprite.setY(y);
+		  }
+		  else{
+			sprite.stop();
+//			sprite.playDeath();
+		  }
+
 	  }
+
 	  
 }
