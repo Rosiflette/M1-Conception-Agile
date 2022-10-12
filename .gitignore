@@ -15,6 +15,7 @@
 # pas les executables ou les logs.
 log/
 target/
+javafx-sdk-19
 
 # Ignore les fichiers bonus
 *.monToken

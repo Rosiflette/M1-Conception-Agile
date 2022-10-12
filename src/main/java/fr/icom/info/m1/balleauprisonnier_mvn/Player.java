@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * 
  * Classe gerant un joueur
@@ -26,22 +29,25 @@ public class Player
 	  ImageView PlayerDirectionArrow;
 	  
 	  GraphicsContext graphicsContext;
-	  
+
+	  Projectile pr;
+	  boolean isShooting = false;
+
 	  /**
 	   * Constructeur du Joueur
-	   * 
+	   *
 	   * @param gc ContextGraphic dans lequel on va afficher le joueur
 	   * @param color couleur du joueur
 	   * @param yInit position verticale
 	   */
 	  Player(GraphicsContext gc, String color, int xInit, int yInit, String side)
 	  {
-		// Tous les joueurs commencent au centre du canvas, 
-	    x = xInit;               
+		// Tous les joueurs commencent au centre du canvas,
+	    x = xInit;
 	    y = yInit;
 	    graphicsContext = gc;
 	    playerColor=color;
-	    
+
 	    angle = 0;
 
 	    // On charge la representation du joueur
@@ -51,7 +57,7 @@ public class Player
 		else{
 			directionArrow = new Image("assets/PlayerArrowUp.png");
 		}
-        
+
         PlayerDirectionArrow = new ImageView();
         PlayerDirectionArrow.setImage(directionArrow);
         PlayerDirectionArrow.setFitWidth(10);
@@ -70,8 +76,8 @@ public class Player
         // step = randomGenerator.nextFloat();
 
         // Pour commencer les joueurs ont une vitesse / un pas fixe
-        step = 1;
-	    
+        step = Math.random()%100;
+
 	  }
 
 	  /**
@@ -79,10 +85,37 @@ public class Player
 	   */
 	  void display()
 	  {
+//		  System.out.println("Position joueur " + x + " " + y);
 		  graphicsContext.save(); // saves the current state on stack, including the current transform
+
+
 	      rotate(graphicsContext, angle, x + directionArrow.getWidth() / 2, y + directionArrow.getHeight() / 2);
 		  graphicsContext.drawImage(directionArrow, x, y);
+//		  System.out.println(angle);
+
+
+
 		  graphicsContext.restore(); // back to original state (before rotation)
+
+		  if(pr != null){
+			  pr.display();
+		  }
+
+//		  if(isShooting && pr != null){
+//
+//			  pr.position[0] += pr.direction[0] * pr.speed;
+//			  pr.position[1] -= pr.direction[1] * pr.speed;
+////			  System.out.println(pr.direction[0] + " " + pr.direction[1]);
+//			  graphicsContext.drawImage(pr.imgBall, pr.position[0], pr.position[1]);
+//
+////			  pr.position[0] += pr.direction[0];
+////			  pr.position[1] += pr.direction[1];
+////			  System.out.println(pr.direction[0] + " " + pr.direction[1]);
+////			  System.out.println(pr.position[0] + " " + pr.position[1]);
+//			  //System.out.println("Position " + pr.position[0] + " " + pr.position[1]);
+////			  graphicsContext.drawImage(pr.imgBall, pr.position[0], pr.position[1]);
+//		  }
+
 	  }
 
 	  private void rotate(GraphicsContext gc, double angle, double px, double py) {
@@ -93,7 +126,9 @@ public class Player
 	  /**
 	   *  Deplacement du joueur vers la gauche, on cantonne le joueur sur le plateau de jeu
 	   */
-	 
+
+	  void deplacement(ArrayList<String> input, int i){  }
+
 	  void moveLeft() 
 	  {	    
 	    if (x > 10 && x < 520) 
@@ -123,10 +158,10 @@ public class Player
 	  {
 	    if (angle > 0 && angle < 180) 
 	    {
-	    	angle += 1;
+	    	angle += 0.2;
 	    }
 	    else {
-	    	angle += 1;
+	    	angle += 0.2;
 	    }
 
 	  }
@@ -139,16 +174,21 @@ public class Player
 	  {
 	    if (angle > 0 && angle < 180) 
 	    {
-	    	angle -=1;
+	    	angle -=0.2;
 	    }
 	    else {
-	    	angle -= 1;
+	    	angle -= 0.2;
 	    }
 	  }
 
 
 	  void shoot(){
-	  	sprite.playShoot();
+		  sprite.playShoot();
+
+		  isShooting = true;
+
+		  pr = new Projectile(angle, this.x, this.y, graphicsContext);
+		  System.out.println("Angle joueur : " + angle);
 	  }
 	  
 	  /**

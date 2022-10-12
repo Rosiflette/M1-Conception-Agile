@@ -18,11 +18,14 @@ import javafx.scene.paint.Color;
 public class Field extends Canvas {
 	
 	/** Joueurs */
-	Player [] joueurs = new Player[2];
+	Player [] joueursHuman = new PlayerHuman[1];
+	Player [] joueursAI = new PlayerAI[2];
 	/** Couleurs possibles */
 	String[] colorMap = new String[] {"blue", "green", "orange", "purple", "yellow"};
 	/** Tableau traçant les evenements */
     ArrayList<String> input = new ArrayList<String>();
+
+	Projectile pr;
     
 
     final GraphicsContext gc;
@@ -48,11 +51,18 @@ public class Field extends Canvas {
         gc = this.getGraphicsContext2D();
         
         /** On initialise le terrain de jeu */
-    	joueurs[0] = new Player(gc, colorMap[0], w/2, h-50, "bottom");
-    	joueurs[0].display();
+		for (int i = 0; i < joueursHuman.length; i++){
+			joueursHuman[i] = new PlayerHuman(gc, colorMap[0], w/2, h-50, "bottom");
+			joueursHuman[i].display();
+		}
 
-    	joueurs[1] = new Player(gc, colorMap[1], w/2, 20, "top");
-    	joueurs[1].display();
+		for (int i = 0; i < joueursAI.length; i++){
+			joueursAI[i] = new PlayerAI(gc, colorMap[1], w/2, 20, "top");
+			joueursAI[i].display();
+		}
+
+
+
 
 
 	    /** 
@@ -104,53 +114,38 @@ public class Field extends Canvas {
 	            gc.fillRect(0, 0, width, height);
 	        	
 	            // Deplacement et affichage des joueurs
-	        	for (int i = 0; i < joueurs.length; i++) 
+	        	for (int i = 0; i < joueursHuman.length; i++)
 	    	    {
-	        		if (i==0 && input.contains("LEFT"))
-	        		{
-	        			joueurs[i].moveLeft();
-	        		} 
-	        		if (i==0 && input.contains("RIGHT")) 
-	        		{
-	        			joueurs[i].moveRight();	        			
-	        		}
-	        		if (i==0 && input.contains("UP"))
-	        		{
-	        			joueurs[i].turnLeft();
-	        		} 
-	        		if (i==0 && input.contains("DOWN")) 
-	        		{
-	        			joueurs[i].turnRight();	        			
-	        		}
-	        		if (i==1 && input.contains("A"))
-	        		{
-	        			joueurs[i].moveLeft();
-	        		} 
-	        		if (i==1 && input.contains("D")) 
-	        		{
-	        			joueurs[i].moveRight();	        			
-	        		}
-	        		if (i==1 && input.contains("W"))
-	        		{
-	        			joueurs[i].turnLeft();
-	        		} 
-	        		if (i==1 && input.contains("S")) 
-	        		{
-	        			joueurs[i].turnRight();	        			
-	        		}
-	        		if (input.contains("SPACE")){
-	        			joueurs[i].shoot();
-					}
+					joueursHuman[i].deplacement(input, i);
 
-	        		
-	        		joueurs[i].display();
+					joueursHuman[i].display();
 	    	    }
+				for (int i = 0; i < joueursAI.length; i++){
+					joueursAI[i].spriteAnimate();
+					joueursAI[i].display();
+				}
+//				if(pr != null){
+//					pr.display();
+//				}
+
 	    	}
 	     }.start(); // On lance la boucle de rafraichissement 
 	     
 	}
 
-	public Player[] getJoueurs() {
-		return joueurs;
+	public Player[] getJoueursAI() {
+		return joueursAI;
+	}
+
+	public int getNbJoueursAI() {
+		return joueursAI.length;
+	}
+
+	public Player[] getJoueursHuman() {
+		return joueursHuman;
+	}
+
+	public int getNbJoueursHuman() {
+		return joueursHuman.length;
 	}
 }
